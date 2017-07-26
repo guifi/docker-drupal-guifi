@@ -25,26 +25,3 @@ foreach $file (@PHP_INI_FILES) {
   print FILE @newlines;
   close(FILE);
 }
-
-print "Copying settings.php...\n";
-
-my $result = `cp /usr/share/drupal/guifi-web/sites/default/default.settings.php \\
-          /usr/share/drupal/guifi-web/sites/default/settings.php`;
-
-print $result."\n";
-
-print "Making files dir...\n";
-
-$result = `mkdir /usr/share/drupal/guifi-web/sites/default/files`;
-
-print $result."\n";
-
-print "Configure permissions...\n";
-
-$result = `chmod o+w /usr/share/drupal/guifi-web/sites/default/files`;
-
-print $result."\n";
-
-$result = `chmod o+w /usr/share/drupal/guifi-web/sites/default/settings.php`;
-
-print $result."\n";

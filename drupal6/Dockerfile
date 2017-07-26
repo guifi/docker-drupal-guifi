@@ -7,25 +7,19 @@ LABEL description="This docker image is ready for \
 developing with guifi.net web environment."
 LABEL maintainer="roger.garcia@guifi.net"
 
-# Definition of environment variables
 
 RUN apt-get update && apt-get dist-upgrade -y \
   && apt-get install -y apache2 php5 php5-mysqlnd php5-gd \
-  git mysql-client libapache2-mod-php5 drush \
+  git mysql-client libapache2-mod-php5 drush wget \
+  gzip \
   && apt-get clean \
   && apt-get autoremove \
   && rm -rf /var/lib/apt/lists/*
 
-# Preparing drupal workdir
-RUN mkdir /usr/share/drupal
 
-# Downloading Drupal files
-WORKDIR /usr/share/drupal
-RUN drush dl drupal-6 --drupal-project-rename=guifi-web
-
-# Preparing Drupal environment
-COPY ./drupal-config.pl /tmp/
-RUN perl /tmp/drupal-config.pl
+# Preparing php5 configuration
+COPY ./php-config.pl /tmp/
+RUN perl /tmp/php-config.pl
 
 # Copy over the apache configuration file
 COPY ./drupal.conf /etc/apache2/sites-available/drupal.conf
@@ -36,10 +30,14 @@ RUN a2dissite 000-default.conf
 RUN a2ensite drupal.conf
 
 # Define Volume for Drupal
-VOLUME /usr/share/drupal/guifi-web
+# VOLUME /usr/share/drupal/guifi-web
+
+# Preparing development dir
+RUN mkdir /usr/share/guifi-dev/
 
 # Copying Entrypoint scripts
 COPY ./docker-entrypoint.sh /
+COPY ./drupal-entry.pl /
 
 EXPOSE 80
 
