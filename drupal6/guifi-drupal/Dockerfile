@@ -30,7 +30,7 @@ RUN a2dissite 000-default.conf
 RUN a2ensite drupal.conf
 
 # Define Volume for Drupal
-# VOLUME /usr/share/drupal/guifi-web
+VOLUME /usr/share/drupal/guifi-web
 
 # Preparing development dir
 RUN mkdir /usr/share/guifi-dev/

@@ -11,7 +11,7 @@ services:
     links:
       - database
     volumes:
-      - ./guifi-web/:/usr/share/drupal/guifi-web/
+      - ./guifi-web:/usr/share/drupal/guifi-web/
       - ./guifi-dev/:/usr/share/guifi-dev/
     ports:
       - 8080:80

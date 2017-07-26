@@ -25,45 +25,13 @@ if (! -e $GUIFI_WEB_DIR."INSTALLED") {
     die "Error creating Drupal dir.\n";
   }
 
-  $output = `drush dl drupal-6 --destination=$GUIFI_WEB_DIR --drupal-project-rename=guifi-web`;
+  $output = `drush dl -y drupal-6 --destination=$DRUPAL_DIR --drupal-project-rename=guifi-web`;
   print $output;
   if ($? != 0) {
     # Error
     die "Error downloading Drupal dir.\n";
   }
-
-  chdir($DRUPAL_DIR);
-  print "Copying settings.php...\n";
-
-  $output = `cp ${GUIFI_WEB_DIR}sites/default/default.settings.php \\
-            ${GUIFI_WEB_DIR}sites/default/settings.php`;
-  if ($? != 0) {
-    # Error
-    die "Error copying settings.php\n";
-  }
-
-  print "Making files dir...\n";
-
-  $output = `mkdir ${GUIFI_WEB_DIR}sites/default/files`;
-  if ($? != 0) {
-    # Error
-    die "Error making files dir.\n";
-  }
-
-  print "Configure permissions...\n";
-
-  $output = `chmod o+w ${GUIFI_WEB_DIR}sites/default/files`;
-  if ($? != 0) {
-    # Error
-    die "Error changing files permissions.\n";
-  }
-
-  $output = `chmod o+w ${GUIFI_WEB_DIR}sites/default/settings.php`;
-  if ($? != 0) {
-    # Error
-    die "Error changing settings permissions.\n";
-  }
-
+ 
   chdir($GUIFI_WEB_DIR);
   $output = `drush si -y --site-name=guifi.net --account-name=$ENV{DRUPAL_ADMIN} \\
    --account-pass=$ENV{DRUPAL_ADMIN_PWD} --db-url=mysqli://$ENV{GUIFI_USER_DB}:$ENV{GUIFI_USER_DB_PWD}\@database/$ENV{GUIFI_DB}`;
