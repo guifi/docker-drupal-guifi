@@ -25,14 +25,14 @@ if (! -e $GUIFI_WEB_DIR."INSTALLED") {
     die "Error creating Drupal dir.\n";
   }
 
-  chdir($DRUPAL_DIR);
-  $output = `drush dl drupal-6 --drupal-project-rename=guifi-web`;
+  $output = `drush dl drupal-6 --destination=$GUIFI_WEB_DIR --drupal-project-rename=guifi-web`;
   print $output;
   if ($? != 0) {
     # Error
     die "Error downloading Drupal dir.\n";
   }
 
+  chdir($DRUPAL_DIR);
   print "Copying settings.php...\n";
 
   $output = `cp ${GUIFI_WEB_DIR}sites/default/default.settings.php \\
