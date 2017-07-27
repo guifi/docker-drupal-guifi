@@ -22,7 +22,7 @@ if (! -e $GUIFI_WEB_DIR."INSTALLED") {
   my $output = `rm -rf ${GUIFI_WEB_DIR}*`;
   if ($? != 0) {
     # Error
-    die "Error creating Drupal dir.\n";
+    die "Error purging Drupal dir.\n";
   }
 
   $output = `drush dl -y drupal-6 --destination=$DRUPAL_DIR --drupal-project-rename=guifi-web`;
@@ -31,7 +31,7 @@ if (! -e $GUIFI_WEB_DIR."INSTALLED") {
     # Error
     die "Error downloading Drupal dir.\n";
   }
- 
+
   chdir($GUIFI_WEB_DIR);
   $output = `drush si -y --site-name=guifi.net --account-name=$ENV{DRUPAL_ADMIN} \\
    --account-pass=$ENV{DRUPAL_ADMIN_PWD} --db-url=mysqli://$ENV{GUIFI_USER_DB}:$ENV{GUIFI_USER_DB_PWD}\@database/$ENV{GUIFI_DB}`;
@@ -108,7 +108,6 @@ if (! -e $GUIFI_WEB_DIR."INSTALLED") {
   }
 
   # We clone actual guifi-drupal git repository
-  chdir($GUIFI_MODULES_DIR);
   $output = `git clone https://github.com/guifi/drupal-guifi.git ${GUIFI_MODULES_DIR}guifi`;
 
   if ($? != 0) {
@@ -116,23 +115,32 @@ if (! -e $GUIFI_WEB_DIR."INSTALLED") {
     die "Error in git clone.\n";
   }
 
-  # Import sql guifi dev
-  #chdir($GUIFI_WEB_DIR);
-  #$output = `drush sql-cli < /tmp/$GUIFI_DEV_DB`;
-
-  #if ($? != 0) {
-  #   # Error
-  #   die "Error in guifi dev db installation.\n";
-  #}
-
-  $output = `drush en -y guifi`;
+  $output = `cd $GUIFI_WEB_DIR && drush en -y guifi`;
 
   if ($? != 0) {
      # Error
      die "Error in guifi module installation.\n";
   }
 
-  # TODO make INSTALLED file
+  # Import sql guifi dev
+  $output = `mysql -u $ENV{GUIFI_USER_DB} -p$ENV{GUIFI_USER_DB_PWD} -h database $ENV{GUIFI_DB}  < /tmp/$GUIFI_DEV_DB;`;
+  print $output;
+  if ($? != 0) {
+     # Error
+     die "Error in guifi dev db installation.\n";
+  }
+
+  # TODO add guifi.net theme
+
+  # make INSTALLED file
+  $output = `touch ${GUIFI_WEB_DIR}INSTALLED`;
+  print $output;
+  if ($? != 0) {
+     # Error
+     die "Error creating INSTALLED file.\n";
+  }
+
+  print "Guifi.net dev page successfully installed in Docker image!\n";
 }
 else {
   print "Already installed.\n";
