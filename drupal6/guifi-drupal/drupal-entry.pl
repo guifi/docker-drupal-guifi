@@ -8,6 +8,7 @@ my $DRUPAL_DIR = "/usr/share/drupal/";
 my $GUIFI_WEB_DIR = $DRUPAL_DIR."guifi-web/";
 my $GUIFI_DEV_DIR = $DRUPAL_DIR."guifi-dev/";
 my $GUIFI_MODULES_DIR = $GUIFI_WEB_DIR."sites/all/modules/";
+my $GUIFI_THEMES_DIR = $GUIFI_WEB_DIR."sites/all/themes/";
 my $GUIFI_DEV_DB = "guifi66_devel.sql";
 my $GUIFI_DEV_DB_GZ = "$GUIFI_DEV_DB.gz";
 my $GUIFI_DOMAIN = "http://www.guifi.net/";
@@ -107,12 +108,12 @@ if (! -e $GUIFI_WEB_DIR."INSTALLED") {
     die "Error in gunzip database dev guifi.\n";
   }
 
-  # We clone actual guifi-drupal git repository
+  # We clone actual drupal-guifi git repository
   $output = `git clone https://github.com/guifi/drupal-guifi.git ${GUIFI_MODULES_DIR}guifi`;
 
   if ($? != 0) {
     # Error
-    die "Error in git clone.\n";
+    die "Error in drupal-guifi git clone.\n";
   }
 
   $output = `cd $GUIFI_WEB_DIR && drush en -y guifi`;
@@ -120,6 +121,21 @@ if (! -e $GUIFI_WEB_DIR."INSTALLED") {
   if ($? != 0) {
      # Error
      die "Error in guifi module installation.\n";
+  }
+
+  # We clone actual drupal-budgets git repository
+  $output = `git clone https://github.com/guifi/drupal-budgets.git ${GUIFI_MODULES_DIR}budgets`;
+
+  if ($? != 0) {
+    # Error
+    die "Error in budgets git clone.\n";
+  }
+
+    $output = `cd $GUIFI_WEB_DIR && drush en -y budgets`;
+
+  if ($? != 0) {
+     # Error
+     die "Error in budgets module installation.\n";
   }
 
   # Import sql guifi dev
@@ -131,6 +147,27 @@ if (! -e $GUIFI_WEB_DIR."INSTALLED") {
   }
 
   # TODO add guifi.net theme
+
+  $output = `mkdir -p $GUIFI_THEMES_DIR`;
+  print $output;
+  if ($? != 0) {
+     # Error
+     die "Error in themes dir creation.\n";
+  }
+
+  $output = `git clone https://github.com/guifi/drupal-theme_guifinet2011.git ${GUIFI_THEMES_DIR}guifi2011`;
+  print $output;
+  if ($? != 0) {
+     # Error
+     die "Error in git cloning theme.\n";
+  }
+
+  $output = `cd $GUIFI_WEB_DIR && drush en -y guifi.net2011 && drush vset theme_default guifi.net2011`;
+  print $output;
+  if ($? != 0) {
+     # Error
+     die "Error activating theme.\n";
+  }
 
   # make INSTALLED file
   $output = `touch ${GUIFI_WEB_DIR}INSTALLED`;
