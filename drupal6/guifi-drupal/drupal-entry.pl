@@ -65,7 +65,6 @@ if (! -e $GUIFI_WEB_DIR."INSTALLED") {
     # Error
     die "Error downloading guifi-drupal dependencies.\n";
   }
-  print "trace1\n";
 
   $output = `drush en -y captcha views \\
             event fckeditor image`;
@@ -74,7 +73,6 @@ if (! -e $GUIFI_WEB_DIR."INSTALLED") {
     # Error
     die "Error installing guifi-drupal dependencies (1).\n";
   }
-  print "trace2\n";
 
   $output = `drush en -y potx webform views \\
             views_slideshow i18n \\
@@ -88,8 +86,6 @@ if (! -e $GUIFI_WEB_DIR."INSTALLED") {
     # Error
     die "Error installing guifi-drupal dependencies (2).\n";
   }
-
-  print "trace3\n";
 
   # We install guifi66 devel mariadb database
   chdir('/tmp');
