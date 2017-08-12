@@ -136,38 +136,50 @@ if (! -e $GUIFI_WEB_DIR."INSTALLED") {
 
   # Import sql guifi dev
   $output = `mysql -u $ENV{GUIFI_USER_DB} -p$ENV{GUIFI_USER_DB_PWD} -h database $ENV{GUIFI_DB}  < /tmp/$GUIFI_DEV_DB;`;
-  print $output;
   if ($? != 0) {
      # Error
      die "Error in guifi dev db installation.\n";
   }
 
-  # TODO add guifi.net theme
+  # set files directory
+  $output = `cd $GUIFI_WEB_DIR && mkdir -p files tmp && chown -R www-data:www-data ./tmp ./files`;
+  if ($? != 0) {
+     # Error
+     die "Error setting files dir and tmp dirs.\n";
+  }
 
   $output = `mkdir -p $GUIFI_THEMES_DIR`;
-  print $output;
   if ($? != 0) {
      # Error
      die "Error in themes dir creation.\n";
   }
 
   $output = `git clone https://github.com/guifi/drupal-theme_guifinet2011.git ${GUIFI_THEMES_DIR}guifi2011`;
-  print $output;
   if ($? != 0) {
      # Error
      die "Error in git cloning theme.\n";
   }
 
+  $output = `cd $GUIFI_WEB_DIR && cp ./sites/all/themes/guifi2011/images/guifi.net_logo.gif ./files/`;
+  if ($? != 0) {
+     # Error
+     die "Error in guifi image copy.\n";
+  }
+
   $output = `cd $GUIFI_WEB_DIR && drush en -y guifi.net2011 && drush vset theme_default guifi.net2011`;
-  print $output;
   if ($? != 0) {
      # Error
      die "Error activating theme.\n";
   }
 
+  $output = `cd $GUIFI_WEB_DIR && drush cc all`;
+  if ($? != 0) {
+     # Error
+     die "Error clearing theme cache.\n";
+  }
+
   # make INSTALLED file
   $output = `touch ${GUIFI_WEB_DIR}INSTALLED`;
-  print $output;
   if ($? != 0) {
      # Error
      die "Error creating INSTALLED file.\n";
