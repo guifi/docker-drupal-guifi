@@ -197,10 +197,22 @@ if (! -e $GUIFI_WEB_DIR."INSTALLED") {
      die "Error activating theme.\n";
   }
 
-  $output = `cd $GUIFI_WEB_DIR && drush cc all`;
+  $output = `cd $GUIFI_WEB_DIR && drush updb -y`;
   if ($? != 0) {
      # Error
-     die "Error clearing theme cache.\n";
+     die "Error updating database.\n";
+  }
+
+  $output = `cd /tmp && wget https://guifi.net/files/color/guifi.net2011-673770f4.tgz`;
+  if ($? != 0) {
+     # Error
+     die "Error downloading theme cache.\n";
+  }
+
+  $output = `cd $GUIFI_WEB_DIR && mkdir -p ./files/color && tar zxf /tmp/guifi.net2011-673770f4.tgz -C ${GUIFI_WEB_DIR}files/color`;
+  if ($? != 0) {
+     # Error
+     die "Error installing theme cache.\n";
   }
 
   # make INSTALLED file
