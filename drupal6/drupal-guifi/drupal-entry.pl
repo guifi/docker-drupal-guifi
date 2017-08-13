@@ -13,7 +13,26 @@ my $GUIFI_DEV_DB = "guifi66_devel.sql";
 my $GUIFI_DEV_DB_GZ = "$GUIFI_DEV_DB.gz";
 my $GUIFI_DOMAIN = "http://www.guifi.net/";
 
+sub xdebug_php {
+  print "Modify xdebug.ini file...\n";
+  my $file = "/etc/php5/apache2/conf.d/20-xdebug.ini";
+  open(FILE, "<".$file) || die "File not found";
+  my @lines = <FILE>;
 
+
+  # Add php5-xdebug support
+  my $xdebug = "xdebug.remote_enable=1
+  xdebug.remote_handler=dbgp
+  xdebug.remote_mode=req
+  xdebug.remote_connect_back=1
+  xdebug.remote_port=$ENV{XDEBUG_PORT}
+  xdebug.remote_autostart=1\n";
+  push(@lines, $xdebug);
+
+  open(FILE, ">".$file) || die "File not found";
+  print FILE @lines;
+  close(FILE);
+}
 
 sleep 15; # We should wait for mariadb container being ready
 
@@ -24,6 +43,12 @@ if (! -e $GUIFI_WEB_DIR."INSTALLED") {
   if ($? != 0) {
     # Error
     die "Error purging Drupal dir.\n";
+  }
+
+  &xdebug_php;
+  if ($? != 0) {
+    # Error
+    die "Error setting xdebug configurations.\n";
   }
 
   $output = `drush dl -y drupal-6 --destination=$DRUPAL_DIR --drupal-project-rename=guifi-web`;

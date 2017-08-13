@@ -8,6 +8,7 @@ services:
       DRUPAL_ADMIN_PWD: drupal
       GUIFI_USER_DB: guifi
       GUIFI_USER_DB_PWD: guifi
+      XDEBUG_PORT: 9000
     links:
       - database
     volumes:

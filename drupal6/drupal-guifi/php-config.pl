@@ -26,24 +26,3 @@ foreach $file (@PHP_INI_FILES) {
   print FILE @newlines;
   close(FILE);
 }
-
-
-print "Modify xdebug.ini file...\n";
-$file = "/etc/php5/apache2/conf.d/20-xdebug.ini";
-open(FILE, "<".$file) || die "File not found";
-my @lines = <FILE>;
-
-
-# Add php5-xdebug support
-my $xdebug = "
-xdebug.remote_enable=1
-xdebug.remote_handler=dbgp
-xdebug.remote_mode=req
-xdebug.remote_connect_back=1
-xdebug.remote_port=9000
-xdebug.remote_autostart=1";
-push(@lines, $xdebug);
-
-open(FILE, ">".$file) || die "File not found";
-print FILE @lines;
-close(FILE);
