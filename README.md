@@ -25,7 +25,7 @@ sudo pip install docker-compose
 And that should be enough to run our docker-compose files.
 
 ## Working with this composition
-In this point we include all possible image uses at the moment
+In this point we include all possible image uses at the moment. All images supplied support Xdebug PHP Debugger (https://xdebug.org/) compatible with a lot of IDEs. 
 ### Drupal 6
 If you want to work with this version of guifi webpage you should download ./drupal6/docker-compose.yml file inside this repository and place it inside a development directory with writing permissions.
 
