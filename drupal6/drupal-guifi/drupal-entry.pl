@@ -137,6 +137,7 @@ if (! -e $GUIFI_WEB_DIR."INSTALLED") {
     die "Error in drupal-guifi git clone.\n";
   }
 
+
   $output = `cd $GUIFI_WEB_DIR && drush en -y guifi`;
 
   if ($? != 0) {
@@ -213,6 +214,22 @@ if (! -e $GUIFI_WEB_DIR."INSTALLED") {
   if ($? != 0) {
      # Error
      die "Error installing theme cache.\n";
+  }
+
+  # We change permissions in guifi module
+  $output = `chmod -R o+rw ${GUIFI_MODULES_DIR}guifi`;
+
+  if ($? != 0) {
+    # Error
+    die "Error changing permissions guifi module.\n";
+  }
+
+  # We change permissions in budgets module
+  $output = `chmod -R o+rw ${GUIFI_MODULES_DIR}budgets`;
+
+  if ($? != 0) {
+    # Error
+    die "Error changing permissions budgets module.\n";
   }
 
   # make INSTALLED file
