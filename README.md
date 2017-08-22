@@ -37,7 +37,15 @@ At this moment, with a terminal instance inside development directory we would t
 docker-compose up
 ```
 
-Then we would have a newly created instance with similar guifi.net website. All users in this enviroment will have the same password: **guifi**
+This command downloads automates installation similar to guifi.net website, its output is the log of the procedure, installation is finished when you see:
+
+```
+Guifi.net dev page successfully installed in Docker image!
+```
+
+Go to http://localhost:8080
+
+All users in this enviroment will have the same password: **guifi**
 
 If you want to erase all development website's content and create a new one, we should execute those commands:
 ```
