@@ -47,7 +47,7 @@ After that you can navigate to:
 - guifi.net website: http://localhost:8080
 - check database with phpmyadmin: http://localhost:8000
 
-In general, all users in this enviroment will have the same password: **guifi**
+All users in this enviroment will have the same password: **guifi**
 
 If you want to erase all development website's content and create a new one, we should execute those commands:
 ```
