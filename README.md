@@ -43,7 +43,9 @@ This command downloads automates installation similar to guifi.net website, its 
 Guifi.net dev page successfully installed in Docker image!
 ```
 
-Go to http://localhost:8080
+After that you can navigate to:
+- guifi.net website: http://localhost:8080
+- check database with phpmyadmin: http://localhost:8000
 
 All users in this enviroment will have the same password: **guifi**
 
