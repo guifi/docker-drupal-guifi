@@ -44,7 +44,7 @@ Guifi.net dev page successfully installed in Docker image!
 ```
 
 After that you can navigate to:
-- guifi.net website: http://localhost:8080 with `user: admin` and `password: drupal`
+- guifi.net website: http://localhost:8080 with `user: webmestre` and `password: guifi`
 - phpmyadmin (database visualization): http://localhost:8000 with `user: root` and `password: admin`
 
 In this environment, all drupal users of guifi.net website will have the same password: **guifi**
