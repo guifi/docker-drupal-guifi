@@ -47,6 +47,8 @@ After that you can navigate to:
 - guifi.net website: http://localhost:8080 with `user: webmestre` and `password: guifi`
 - phpmyadmin (database visualization): http://localhost:8000 with `user: root` and `password: admin`
 
+User `webmestre` is the Drupal ID 1 user. It is imperative to use this user to test migrations to further Drupal versions.
+
 In this environment, all drupal users of guifi.net website will have the same password: **guifi**
 
 If you want to erase all development website's content and create a new one, we should execute those commands:
