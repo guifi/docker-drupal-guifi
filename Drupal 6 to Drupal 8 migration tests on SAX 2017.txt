@@ -1,0 +1,69 @@
+guifi.net DRUPAL 6 TO DRUPAL 7 MIGRATION
+setup dev environment on https://github.com/guifi/docker-drupal-guifi
+edit /etc/hosts and add 127.0.0.1	guifi.dev (no problem with that since RewriteBase is commented on /usr/share/drupal/guifi-web/.htaccess)
+$db_url = 'mysql://username:password@localhost/databasename'; should be commented on On line 91 
+
+go to http://guifi.dev:8080/user and login as webmestre
+IT IS ALWAYS RECOMMENDED TO DISABLE AND UNINSTALL ALL MODULES THAT YOU DON'T NEED. P.E. Throttle module. I'm not going to do it since I don't know them!!!
+change user's email as it's conflicting with all the other user's because docker script
+do a docker ps
+do a docker exec -it <ID> bash
+cd /usr/share/drupal/guifi-web
+drush dl admin_menu views_bulk_operations admin_views module_filter backup_migrate
+(yes, I know. I'm installing modules and I will have to upgrade them later but they are really helpful to troubleshoot migration issues!)
+install latests development versions of all modules when asked
+drush en -y admin_menu views_bulk_operations admin_views module_filter backup_migrate admin_menu_toolbar
+go to http://guifi.dev:8080/ca/admin/settings/performance and disable all caching and optimization
+drush cc
+configure backup_migrate to backup every hour (whatever you like)
+drush dis -y budgets guifi
+
+Prepare migration:
+(we need a Drupal 8 docker image ready for development)
+create a new database on phpmyadmin container
+create a new drupal 8 container - drupal8.dev:8088
+create entry on your local dev environment /etc/hosts - 127.0.0.1	drupal8.dev
+point browser to drupal8.dev:8088 and follow all installation recomendations
+read https://www.drupal.org/docs/8/upgrade/upgrading-from-drupal-6-or-7-to-drupal-8
+drush -y en migrate migrate_drupal migrate_drupal_ui
+do a docker backup or commit to a new image or backup the database with phpmyadmin docker
+install all the modules runnning on production environment (we need drush 8!!!). Keep in mind that contrib modules on Drupal 6 that had became part of core in Drupal 8 must not be installed!!!:
+////////WARNING: Drupal 6 to 8 migrations currently don't include translations of nodes. https://www.drupal.org/node/2225775 (1 to 3 years old post comments)
+Deprecated modules (no Drupal 8 version): event image image_attach image_gallery image_filter image_captcha fivestar_comment
+try the migration http://drupal8.dev:8088/upgrade
+
+////TRY 1//// -- It failed!!!!
+drush dl admin_menu module_filter backup_migrate diff captcha views_bulk_operations views_slideshow fivestar votingapi webform -y
+The next command fails:
+drush en admin_menu module_filter backup_migrate diff captcha views_bulk_operations views_slideshow fivestar votingapi webform -y
+I've just found that if you enable them one by one some of them enable correctly and some not but if you try it a second or third time they enable.
+I'm going forward without investigating the issue
+At this point website gives an error: The website encountered an unexpected error. Please try again later.
+And drush is unable to uninstall the problematic modules:
+drush -y dis  admin_menu module_filter backup_migrate diff captcha views_bulk_operations views_slideshow fivestar votingapi webform
+Drupal 8 does not support disabling modules. Use pm-uninstall instead.                            [error]
+https://www.drupal.org/node/2563867 Investigating the drush error there are a lot of chances that the problem comes from admin_menu
+/////END OF TRY 1
+RESTORE FROM DOCKER COMMINT
+////TRY 2////
+drush -y en migrate migrate_drupal migrate_drupal_ui
+drush en module_filter backup_migrate diff captcha views_bulk_operations views_slideshow fivestar votingapi webform -y
+drush en devel ctools ctools_views
+On the next step I decided wich modules to enable without really knowing if we actually use them on D6:
+At http://drupal8.dev:8088/admin/modules enable: Actions, Activity Tracker, Aggregator, Book, Content Moderation, Configuration Translation, Content Translation, Datetime Range, Forum (do we use it?), Image CAPTCHA, Interface Translation, Language, Responsive Image, Statistics, Testing (probably we will need it), Views Slideshow Cycle, Webform Node, Webform UI, 
+It complaints: Error message The testing framework requires the PHPUnit package. Please run 'composer install --dev' to ensure it is present. (Currently using PHPUnit dependency version Not found)
+We have to solve that on the Drupal 8 dev docker
+I tryed to do a backup database thru http://drupal8.dev:8088/admin/config/development/backup_migrate but it fails (we need to investigate). I'm going to back it up with phpmyadmin.
+try the migration http://drupal8.dev:8088/upgrade
+
+OK. I have to leave SAX 2017.
+At this point we got:
+Upgrade analysis report
+    25 available upgrade paths
+    45 missing upgrade paths
+Much better than yesterday's night!!!!
+Further investigation needed since we have missing upgrades paths on already installed and enabled modules, core and contrib WTF!
+
+Keep in touch!!
+
+ Edgar
