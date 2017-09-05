@@ -34,6 +34,30 @@ sub xdebug_php {
   close(FILE);
 }
 
+sub google_api_replace {
+  print "Modifying google API files...\n";
+
+  my $file ="$GUIFI_MODULES_DIR/guifi/guifi_includes.inc.php";
+
+  my $spattern = "libraries=places";
+  my $rpattern = $spattern."&3.22&key=AIzaSyD2HdZ9zq_cEyFdTFsZ_aNWI6QkxK4wwYs";
+
+  print "Opening file: $file\n";
+  open(FILE, "<".$file) || die "File not found";
+  my @lines = <FILE>;
+  close(FILE);
+  my @newlines;
+  foreach(@lines) {
+      $_ =~ s/${spattern}/${rpattern}/g;
+      push(@newlines,$_);
+  }
+  
+
+  open(FILE, ">".$file) || die "File not found";
+  print FILE @newlines;
+  close(FILE);
+}
+
 sleep 15; # We should wait for mariadb container being ready
 
 print "Checking configurations...\n";
@@ -136,6 +160,9 @@ if (! -e $GUIFI_WEB_DIR."INSTALLED") {
     # Error
     die "Error in drupal-guifi git clone.\n";
   }
+
+  # Setting Google API Key
+  &google_api_replace;
 
 
   $output = `cd $GUIFI_WEB_DIR && drush en -y guifi`;
