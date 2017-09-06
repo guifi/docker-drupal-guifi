@@ -61,3 +61,9 @@ docker-compose rm -vf
 sudo rm -rf ./guifi-web/*
 docker-compose up
 ```
+
+### Drupal 7
+In development
+
+### Drupal 8
+In development

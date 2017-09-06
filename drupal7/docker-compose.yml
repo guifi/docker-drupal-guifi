@@ -1,7 +1,7 @@
 version: "3"
 services:
   guifi-drupal:
-    image: guifi/drupal-guifi:drupal6
+    image: guifi/drupal-guifi:drupal7
     environment:
       GUIFI_DB: guifidev
       DRUPAL_ADMIN: admin
