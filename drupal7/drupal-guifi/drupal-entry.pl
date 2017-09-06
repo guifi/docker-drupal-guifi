@@ -168,6 +168,14 @@ if (! -e $GUIFI_WEB_DIR."INSTALLED") {
      die "Error in ctools dir creation.\n";
   }
   
+  # Deleting all /tmp files
+  $output = `rm -rf /tmp/*`;
+  if ($? != 0) {
+     # Error
+     die "Error removing all temp files.\n";
+  }
+
+
   # make INSTALLED file
   $output = `touch ${GUIFI_WEB_DIR}INSTALLED`;
   if ($? != 0) {
