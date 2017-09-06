@@ -162,7 +162,7 @@ if (! -e $GUIFI_WEB_DIR."INSTALLED") {
   }
 
   # Creating ctools dir & changing dir permissions
-  $output = `mkdir -p ${$GUIFI_WEB_DIR}ctools/css && chown -R www-data:www-data ${GUIFI_WEB_DIR}ctools`;
+  $output = `mkdir -p ${GUIFI_WEB_DIR}ctools/css && chown -R www-data:www-data ${GUIFI_WEB_DIR}ctools`;
   if ($? != 0) {
      # Error
      die "Error in ctools dir creation.\n";
