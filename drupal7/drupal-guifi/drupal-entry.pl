@@ -100,8 +100,8 @@ if (! -e $GUIFI_WEB_DIR."INSTALLED") {
 
   # TODO install all necessary modules to make guifi module working
 
-  $output = `drush dl -y views \\
-            views_slideshow i18n ctools \\
+  $output = `drush dl -y views variable \\
+            views_slideshow votingapi i18n ctools \\
             fivestar devel `;
 
   print $output."\n";
@@ -111,8 +111,8 @@ if (! -e $GUIFI_WEB_DIR."INSTALLED") {
     die "Error downloading guifi-drupal dependencies.\n";
   }
 
-  $output = `drush en -y views \\
-            views_slideshow i18n \\
+  $output = `drush en -y views variable \\
+            views_slideshow votingapi i18n \\
             fivestar devel `;
 
   if ($? != 0) {
@@ -137,14 +137,62 @@ if (! -e $GUIFI_WEB_DIR."INSTALLED") {
     die "Error in gunzip database dev guifi.\n";
   }
 
-  # We clone actual drupal-guifi git repository
-  $output = `git clone https://github.com/guifi/drupal-guifi.git ${GUIFI_MODULES_DIR}guifi`;
+  # We clone actual drupal-guifi git repository (drupal 7 branch)
+  $output = `git clone https://github.com/guifi/drupal-guifi.git ${GUIFI_MODULES_DIR}guifi \\
+              && cd ${GUIFI_MODULES_DIR}guifi && git checkout -b drupal7 origin/drupal7`;
 
   if ($? != 0) {
     # Error
     die "Error in drupal-guifi git clone.\n";
   }
 
+  $output = `cd $GUIFI_WEB_DIR && drush en -y guifi`;
+
+  if ($? != 0) {
+     # Error
+     die "Error in guifi module installation.\n";
+  }
+
+  # We clone actual drupal-budgets git repository (drupal 7 branch)
+  $output = `git clone https://github.com/guifi/drupal-budgets.git ${GUIFI_MODULES_DIR}budgets \\
+              && cd ${GUIFI_MODULES_DIR}budgets && git checkout -b drupal7 origin/drupal7`;
+  
+  if ($? != 0) {
+    # Error
+    die "Error in budgets git clone.\n";
+  }
+
+  $output = `cd $GUIFI_WEB_DIR && drush en -y budgets`;
+
+  if ($? != 0) {
+     # Error
+     die "Error in budgets module installation.\n";
+  }
+
+  # Import sql guifi dev
+  $output = `mysql -u $ENV{GUIFI_USER_DB} -p$ENV{GUIFI_USER_DB_PWD} -h database $ENV{GUIFI_DB}  < /tmp/$GUIFI_DEV_DB;`;
+  if ($? != 0) {
+     # Error
+     die "Error in guifi dev db installation.\n";
+  }
+
+  # We change permissions in guifi module
+  $output = `chmod -R o+rw ${GUIFI_MODULES_DIR}guifi`;
+
+  if ($? != 0) {
+    # Error
+    die "Error changing permissions guifi module.\n";
+  }
+
+  # We change permissions in budgets module
+  $output = `chmod -R o+rw ${GUIFI_MODULES_DIR}budgets`;
+
+  if ($? != 0) {
+    # Error
+    die "Error changing permissions budgets module.\n";
+  }
+
+  
   # Setting variables settings.php
   $output = `cd $GUIFI_WEB_DIR && drush vset drupal_http_request_fails FALSE`;
 
