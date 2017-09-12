@@ -51,7 +51,7 @@ sub google_api_replace {
       $_ =~ s/${spattern}/${rpattern}/g;
       push(@newlines,$_);
   }
-  
+
 
   open(FILE, ">".$file) || die "File not found";
   print FILE @newlines;
@@ -102,7 +102,7 @@ if (! -e $GUIFI_WEB_DIR."INSTALLED") {
 
   $output = `drush dl -y views variable \\
             views_slideshow votingapi i18n ctools \\
-            fivestar devel `;
+            fivestar devel l10n_client`;
 
   print $output."\n";
 
@@ -113,7 +113,7 @@ if (! -e $GUIFI_WEB_DIR."INSTALLED") {
 
   $output = `drush en -y views variable \\
             views_slideshow votingapi i18n \\
-            fivestar devel `;
+            fivestar devel l10n_client`;
 
   if ($? != 0) {
     # Error
@@ -156,7 +156,7 @@ if (! -e $GUIFI_WEB_DIR."INSTALLED") {
   # We clone actual drupal-budgets git repository (drupal 7 branch)
   $output = `git clone https://github.com/guifi/drupal-budgets.git ${GUIFI_MODULES_DIR}budgets \\
               && cd ${GUIFI_MODULES_DIR}budgets && git checkout -b drupal7 origin/drupal7`;
-  
+
   if ($? != 0) {
     # Error
     die "Error in budgets git clone.\n";
@@ -168,6 +168,15 @@ if (! -e $GUIFI_WEB_DIR."INSTALLED") {
      # Error
      die "Error in budgets module installation.\n";
   }
+
+  # Drop database drupal 7
+  $output = `mysql -u $ENV{GUIFI_USER_DB} -p$ENV{GUIFI_USER_DB_PWD} -h database -e "DROP DATABASE $ENV{GUIFI_DB};" \\
+              && mysql -u $ENV{GUIFI_USER_DB} -p$ENV{GUIFI_USER_DB_PWD} -h database -e "CREATE DATABASE $ENV{GUIFI_DB};"`;
+  if ($? != 0) {
+     # Error
+     die "Error in guifi dev db drop.\n";
+  }
+
 
   # Import sql guifi dev
   $output = `mysql -u $ENV{GUIFI_USER_DB} -p$ENV{GUIFI_USER_DB_PWD} -h database $ENV{GUIFI_DB}  < /tmp/$GUIFI_DEV_DB;`;
@@ -192,14 +201,21 @@ if (! -e $GUIFI_WEB_DIR."INSTALLED") {
     die "Error changing permissions budgets module.\n";
   }
 
-  
-  # Setting variables settings.php
-  $output = `cd $GUIFI_WEB_DIR && drush vset drupal_http_request_fails FALSE`;
+  # updating db
+  #$output = `cd $GUIFI_WEB_DIR && drush updb`;
 
-  if ($? != 0) {
+  #if ($? != 0) {
     # Error
-    die "Error setting settings.php variables.\n";
-  }
+    #die "Error updating db.\n";
+  #}
+
+  # Setting variables settings.php
+  #$output = `cd $GUIFI_WEB_DIR && drush vset drupal_http_request_fails FALSE`;
+
+  #if ($? != 0) {
+    # Error
+    #die "Error setting settings.php variables.\n";
+  #}
 
 # We change permissions in budgets module
   $output = `chown -R www-data:www-data ${GUIFI_WEB_DIR}sites/default/files`;
@@ -215,7 +231,7 @@ if (! -e $GUIFI_WEB_DIR."INSTALLED") {
      # Error
      die "Error in ctools dir creation.\n";
   }
-  
+
   # Deleting all /tmp files
   $output = `rm -rf /tmp/*`;
   if ($? != 0) {
