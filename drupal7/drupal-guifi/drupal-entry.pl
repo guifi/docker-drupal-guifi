@@ -9,9 +9,9 @@ my $GUIFI_WEB_DIR = $DRUPAL_DIR."guifi-web/";
 my $GUIFI_DEV_DIR = $DRUPAL_DIR."guifi-dev/";
 my $GUIFI_MODULES_DIR = $GUIFI_WEB_DIR."sites/all/modules/";
 my $GUIFI_THEMES_DIR = $GUIFI_WEB_DIR."sites/all/themes/";
-my $GUIFI_DEV_DB = "guifi66_devel.sql";
+my $GUIFI_DEV_DB = "guifi66_d7.sql";
 my $GUIFI_DEV_DB_GZ = "$GUIFI_DEV_DB.gz";
-my $GUIFI_DOMAIN = "http://www.guifi.net/";
+my $GUIFI_DOMAIN = "http://flaugier.ddns.net/";
 
 sub xdebug_php {
   print "Modify xdebug.ini file...\n";
@@ -98,9 +98,7 @@ if (! -e $GUIFI_WEB_DIR."INSTALLED") {
     die "Error in chmod command.\n";
   }
 
-  # TODO install all necessary modules to make guifi module working
-
-  $output = `drush dl -y views variable \\
+  $output = `drush dl -y views variable schema \\
             views_slideshow votingapi i18n ctools \\
             fivestar devel l10n_client`;
 
@@ -111,8 +109,8 @@ if (! -e $GUIFI_WEB_DIR."INSTALLED") {
     die "Error downloading guifi-drupal dependencies.\n";
   }
 
-  $output = `drush en -y views variable \\
-            views_slideshow votingapi i18n \\
+  $output = `drush en -y views variable schema \\
+            views_slideshow votingapi i18n ctools \\
             fivestar devel l10n_client`;
 
   if ($? != 0) {
@@ -202,20 +200,20 @@ if (! -e $GUIFI_WEB_DIR."INSTALLED") {
   }
 
   # updating db
-  #$output = `cd $GUIFI_WEB_DIR && drush updb`;
+  $output = `cd $GUIFI_WEB_DIR && drush updb -y`;
 
-  #if ($? != 0) {
+  if ($? != 0) {
     # Error
-    #die "Error updating db.\n";
-  #}
+    die "Error updating db.\n";
+  }
 
   # Setting variables settings.php
-  #$output = `cd $GUIFI_WEB_DIR && drush vset drupal_http_request_fails FALSE`;
+  $output = `cd $GUIFI_WEB_DIR && drush vset drupal_http_request_fails FALSE`;
 
-  #if ($? != 0) {
+  if ($? != 0) {
     # Error
-    #die "Error setting settings.php variables.\n";
-  #}
+    die "Error setting settings.php variables.\n";
+  }
 
 # We change permissions in budgets module
   $output = `chown -R www-data:www-data ${GUIFI_WEB_DIR}sites/default/files`;
@@ -225,6 +223,14 @@ if (! -e $GUIFI_WEB_DIR."INSTALLED") {
     die "Error changing permissions budgets module.\n";
   }
 
+  # Creating tmp dir & changing dir permissions
+  $output = `mkdir -p ${GUIFI_WEB_DIR}sites/default/tmp && chown -R www-data:www-data ${GUIFI_WEB_DIR}sites/default/tmp`;
+  if ($? != 0) {
+     # Error
+     die "Error in tmp dir creation.\n";
+  }
+
+  
   # Creating ctools dir & changing dir permissions
   $output = `mkdir -p ${GUIFI_WEB_DIR}ctools/css && chown -R www-data:www-data ${GUIFI_WEB_DIR}ctools`;
   if ($? != 0) {
