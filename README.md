@@ -67,3 +67,6 @@ In development
 
 ### Drupal 8
 In development
+
+## Using XDebug PHP debugger
+Default configuration tries to connect using DBGp protocol to host 9000 port. To start a debugging session you need to add http://localhost:8080/?XDEBUG_SESSION_START=1
