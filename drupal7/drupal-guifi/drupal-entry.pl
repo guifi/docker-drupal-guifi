@@ -26,7 +26,7 @@ sub xdebug_php {
   xdebug.remote_mode=req
   xdebug.remote_connect_back=1
   xdebug.remote_port=$ENV{XDEBUG_PORT}
-  xdebug.remote_autostart=1\n";
+  xdebug.remote_autostart=0\n";
   push(@lines, $xdebug);
 
   open(FILE, ">".$file) || die "File not found";
@@ -62,17 +62,17 @@ sleep 15; # We should wait for mariadb container being ready
 
 print "Checking configurations...\n";
 
+  &xdebug_php;
+  if ($? != 0) {
+    # Error
+    die "Error setting xdebug configurations.\n";
+  }
+
 if (! -e $GUIFI_WEB_DIR."INSTALLED") {
   my $output = `rm -rf ${GUIFI_WEB_DIR}*`;
   if ($? != 0) {
     # Error
     die "Error purging Drupal dir.\n";
-  }
-
-  &xdebug_php;
-  if ($? != 0) {
-    # Error
-    die "Error setting xdebug configurations.\n";
   }
 
   $output = `drush dl -y drupal-7 --destination=$DRUPAL_DIR --drupal-project-rename=guifi-web`;
