@@ -1,5 +1,5 @@
 # Set the base image
-FROM debian:jessie
+FROM debian:stretch
 
 LABEL net.guifi.vendor="Fundacio guifi.net"
 LABEL version="1.0"
@@ -9,8 +9,8 @@ LABEL maintainer="roger.garcia@guifi.net"
 
 
 RUN apt-get update && apt-get dist-upgrade -y \
-  && apt-get install -y apache2 php5 php5-mysqlnd php5-gd \
-  php5-xdebug libapache2-mod-php5 wget \
+  && apt-get install -y apache2 php7.0 php7.0-mysqlnd php7.0-gd \
+  php7.0-xml php7.0-xdebug libapache2-mod-php7.0 wget \
   gzip git mysql-client \
   && apt-get clean \
   && apt-get autoremove \

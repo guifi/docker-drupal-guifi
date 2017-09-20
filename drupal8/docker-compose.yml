@@ -1,0 +1,38 @@
+version: "3"
+services:
+  guifi-drupal:
+    image: guifi/drupal-guifi:drupal8
+    environment:
+      GUIFI_DB: guifidev
+      DRUPAL_ADMIN: admin
+      DRUPAL_ADMIN_PWD: drupal
+      GUIFI_USER_DB: guifi
+      GUIFI_USER_DB_PWD: guifi
+      XDEBUG_PORT: 9000
+    links:
+      - database
+    volumes:
+      - ./guifi-web:/usr/share/drupal/guifi-web/
+    ports:
+      - 8080:80
+    depends_on:
+      - database
+
+  database:
+    image: "mariadb"
+    environment:
+      MYSQL_ROOT_PASSWORD: admin
+      MYSQL_DATABASE: guifidev
+      MYSQL_USER: guifi
+      MYSQL_PASSWORD: guifi
+
+  myadmin:
+    image: "phpmyadmin/phpmyadmin"
+    links:
+      - database:db
+    ports:
+      - 8000:80
+
+volumes:
+  guifi-web:
+    external: false
