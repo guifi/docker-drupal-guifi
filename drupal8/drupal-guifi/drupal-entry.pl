@@ -66,6 +66,20 @@ if (! -e $GUIFI_WEB_DIR."INSTALLED") {
     die "Error in drush si command.\n";
   }
 
+  # We download migrate packages
+  $output = `cd $GUIFI_WEB_DIR && drush dl -y migrate_upgrade migrate_plus migrate_tools migrate_manifest`;
+  if ($? != 0) {
+    # Error
+    die "Error in drush dl command.\n";
+  }
+
+  # We install migrate packages
+  $output = `cd $GUIFI_WEB_DIR && drush en -y migrate_upgrade migrate_plus migrate_tools migrate_manifest`;
+  if ($? != 0) {
+    # Error
+    die "Error in drush en command.\n";
+  }
+
   # We should reduce privileges to avoid possible vulnerabilities
   $output = `chmod o-w /usr/share/drupal/guifi-web/sites/default/settings.php`;
 
