@@ -9,9 +9,9 @@ my $GUIFI_WEB_DIR = $DRUPAL_DIR."guifi-web/";
 my $GUIFI_DEV_DIR = $DRUPAL_DIR."guifi-dev/";
 my $GUIFI_MODULES_DIR = $GUIFI_WEB_DIR."sites/all/modules/";
 my $GUIFI_THEMES_DIR = $GUIFI_WEB_DIR."sites/all/themes/";
-my $GUIFI_DEV_DB = "guifi66_d7.sql";
+my $GUIFI_DEV_DB = "guifi66_d8.sql";
 my $GUIFI_DEV_DB_GZ = "$GUIFI_DEV_DB.gz";
-my $GUIFI_DOMAIN = "http://flaugier.ddns.net/";
+my $GUIFI_DOMAIN = "http://devops.guifi.net/";
 
 sub xdebug_php {
   print "Modify xdebug.ini file...\n";
@@ -88,12 +88,12 @@ if (! -e $GUIFI_WEB_DIR."INSTALLED") {
     die "Error in chmod command.\n";
   }
 
-  # We change permissions in budgets module
+  # We change permissions in files dir
   $output = `chown -R www-data:www-data ${GUIFI_WEB_DIR}sites/default/files`;
 
   if ($? != 0) {
     # Error
-    die "Error changing permissions budgets module.\n";
+    die "Error changing permissions files dir.\n";
   }
 
 
@@ -102,6 +102,54 @@ if (! -e $GUIFI_WEB_DIR."INSTALLED") {
   if ($? != 0) {
      # Error
      die "Error in tmp dir creation.\n";
+  }
+
+  # We clone actual drupal-guifi git repository (drupal 8 branch)
+  $output = `git clone https://github.com/guifi/drupal-guifi.git ${GUIFI_MODULES_DIR}guifi \\
+              && cd ${GUIFI_MODULES_DIR}guifi && git checkout -b drupal8 origin/drupal8`;
+
+  if ($? != 0) {
+    # Error
+    die "Error in drupal-guifi git clone.\n";
+  }
+
+  $output = `cd $GUIFI_WEB_DIR && drush en -y guifi`;
+
+  if ($? != 0) {
+     # Error
+     print "Error in guifi module installation.\n";
+  }
+
+  # We install guifi66 devel mariadb database
+  chdir('/tmp');
+  $output = `wget $GUIFI_DOMAIN$GUIFI_DEV_DB_GZ`;
+
+  if ($? != 0) {
+    # Error
+    die "Error in download database dev guifi.\n";
+  }
+
+  # gunzip db
+  $output = `gunzip $GUIFI_DEV_DB_GZ`;
+
+  if ($? != 0) {
+    # Error
+    die "Error in gunzip database dev guifi.\n";
+  }
+
+  # Drop database drupal 8
+  $output = `mysql -u $ENV{GUIFI_USER_DB} -p$ENV{GUIFI_USER_DB_PWD} -h database -e "DROP DATABASE $ENV{GUIFI_DB};" \\
+              && mysql -u $ENV{GUIFI_USER_DB} -p$ENV{GUIFI_USER_DB_PWD} -h database -e "CREATE DATABASE $ENV{GUIFI_DB};"`;
+  if ($? != 0) {
+     # Error
+     die "Error in guifi dev db drop.\n";
+  }
+
+  # Import sql guifi dev
+  $output = `mysql -u $ENV{GUIFI_USER_DB} -p$ENV{GUIFI_USER_DB_PWD} -h database $ENV{GUIFI_DB}  < /tmp/$GUIFI_DEV_DB;`;
+  if ($? != 0) {
+     # Error
+     die "Error in guifi dev db installation.\n";
   }
 
 
