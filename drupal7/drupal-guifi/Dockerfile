@@ -10,7 +10,7 @@ LABEL maintainer="roger.garcia@guifi.net"
 
 RUN apt-get update && apt-get dist-upgrade -y \
   && apt-get install -y apache2 php5 php5-mysqlnd php5-gd \
-  php5-xdebug libapache2-mod-php5 wget \
+  php5-xdebug libapache2-mod-php5 wget vim \
   gzip git mysql-client \
   && apt-get clean \
   && apt-get autoremove \

@@ -10,7 +10,7 @@ LABEL maintainer="roger.garcia@guifi.net"
 
 RUN apt-get update && apt-get dist-upgrade -y \
   && apt-get install -y apache2 php7.0 php7.0-mysqlnd php7.0-gd \
-  php7.0-xml php7.0-xdebug libapache2-mod-php7.0 wget \
+  php7.0-xml php7.0-xdebug libapache2-mod-php7.0 wget vim \
   gzip git mysql-client \
   && apt-get clean \
   && apt-get autoremove \
