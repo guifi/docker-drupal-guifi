@@ -9,9 +9,9 @@ my $GUIFI_WEB_DIR = $DRUPAL_DIR."guifi-web/";
 my $GUIFI_DEV_DIR = $DRUPAL_DIR."guifi-dev/";
 my $GUIFI_MODULES_DIR = $GUIFI_WEB_DIR."sites/all/modules/";
 my $GUIFI_THEMES_DIR = $GUIFI_WEB_DIR."sites/all/themes/";
-my $GUIFI_DEV_DB = "guifi66_devel.sql";
+my $GUIFI_DEV_DB = "guifidev.sql";
 my $GUIFI_DEV_DB_GZ = "$GUIFI_DEV_DB.gz";
-my $GUIFI_DOMAIN = "http://www.guifi.net/";
+my $GUIFI_DOMAIN = "http://devops.guifi.net/";
 
 sub xdebug_php {
   print "Modify xdebug.ini file...\n";
@@ -51,7 +51,7 @@ sub google_api_replace {
       $_ =~ s/${spattern}/${rpattern}/g;
       push(@newlines,$_);
   }
-  
+
 
   open(FILE, ">".$file) || die "File not found";
   print FILE @newlines;
@@ -185,6 +185,14 @@ if (! -e $GUIFI_WEB_DIR."INSTALLED") {
   if ($? != 0) {
      # Error
      die "Error in budgets module installation.\n";
+  }
+
+  # Drop database drupal 6
+  $output = `mysql -u $ENV{GUIFI_USER_DB} -p$ENV{GUIFI_USER_DB_PWD} -h database -e "DROP DATABASE $ENV{GUIFI_DB};" \\
+              && mysql -u $ENV{GUIFI_USER_DB} -p$ENV{GUIFI_USER_DB_PWD} -h database -e "CREATE DATABASE $ENV{GUIFI_DB};"`;
+  if ($? != 0) {
+     # Error
+     die "Error in guifi dev db drop.\n";
   }
 
   # Import sql guifi dev
