@@ -9,7 +9,7 @@ my $GUIFI_WEB_DIR = $DRUPAL_DIR."guifi-web/";
 my $GUIFI_DEV_DIR = $DRUPAL_DIR."guifi-dev/";
 my $GUIFI_MODULES_DIR = $GUIFI_WEB_DIR."sites/all/modules/";
 my $GUIFI_THEMES_DIR = $GUIFI_WEB_DIR."sites/all/themes/";
-my $GUIFI_DEV_DB = "guifidev.sql";
+my $GUIFI_DEV_DB = "guifi66_d6.sql";
 my $GUIFI_DEV_DB_GZ = "$GUIFI_DEV_DB.gz";
 my $GUIFI_DOMAIN = "http://devops.guifi.net/";
 

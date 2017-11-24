@@ -11,7 +11,7 @@ my $GUIFI_MODULES_DIR = $GUIFI_WEB_DIR."sites/all/modules/";
 my $GUIFI_THEMES_DIR = $GUIFI_WEB_DIR."sites/all/themes/";
 my $GUIFI_DEV_DB = "guifi66_d7.sql";
 my $GUIFI_DEV_DB_GZ = "$GUIFI_DEV_DB.gz";
-my $GUIFI_DOMAIN = "http://flaugier.ddns.net/";
+my $GUIFI_DOMAIN = "http://devops.guifi.net/";
 
 sub xdebug_php {
   print "Modify xdebug.ini file...\n";
@@ -230,7 +230,7 @@ if (! -e $GUIFI_WEB_DIR."INSTALLED") {
      die "Error in tmp dir creation.\n";
   }
 
-  
+
   # Creating ctools dir & changing dir permissions
   $output = `mkdir -p ${GUIFI_WEB_DIR}ctools/css && chown -R www-data:www-data ${GUIFI_WEB_DIR}ctools`;
   if ($? != 0) {

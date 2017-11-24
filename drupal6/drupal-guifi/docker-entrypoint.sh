@@ -1,6 +1,10 @@
 #!/usr/bin/env bash
-#cd /usr/share/drupal/guifi-web
-#drush si -y --site-name=guifi.net --db-url=mysqli://guifi:guifi@database/guifidev --account-name=admin --account-pass=drupal
+
 # Configuration script in Perl
 perl /drupal-entry.pl
+
+# Apache gets grumpy about PID files pre-existing
+rm -f /var/run/apache2/apache2.pid
+
+# Running apache daemon
 /usr/sbin/apache2ctl -D FOREGROUND
