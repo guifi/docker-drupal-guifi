@@ -11,7 +11,6 @@ my $GUIFI_MODULES_DIR = $GUIFI_WEB_DIR."sites/all/modules/";
 my $GUIFI_THEMES_DIR = $GUIFI_WEB_DIR."sites/all/themes/";
 my $GUIFI_DEV_DB = "guifi66_d6.sql";
 my $GUIFI_DEV_DB_GZ = "$GUIFI_DEV_DB.gz";
-my $GUIFI_DOMAIN = "http://devops.guifi.net/";
 
 sub xdebug_php {
   print "Modify xdebug.ini file...\n";
@@ -138,7 +137,7 @@ if (! -e $GUIFI_WEB_DIR."INSTALLED") {
 
   # We install guifi66 devel mariadb database
   chdir('/tmp');
-  $output = `wget $GUIFI_DOMAIN$GUIFI_DEV_DB_GZ`;
+  $output = `wget $ENV{GUIFI_URL}$GUIFI_DEV_DB_GZ`;
 
   if ($? != 0) {
     # Error

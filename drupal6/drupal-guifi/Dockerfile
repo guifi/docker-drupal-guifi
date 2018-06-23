@@ -7,6 +7,7 @@ LABEL description="This docker image is ready for \
 developing with guifi.net web environment."
 LABEL maintainer="roger.garcia@guifi.net"
 
+ENV GUIFI_URL http://devops.guifi.net/
 
 RUN apt-get update && apt-get dist-upgrade -y \
   && apt-get install -y apache2 php5 php5-mysqlnd php5-gd \
