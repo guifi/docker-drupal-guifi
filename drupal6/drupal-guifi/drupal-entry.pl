@@ -137,7 +137,7 @@ if (! -e $GUIFI_WEB_DIR."INSTALLED") {
 
   # We install guifi66 devel mariadb database
   chdir('/tmp');
-  $output = `wget $ENV{GUIFI_URL}$GUIFI_DEV_DB_GZ`;
+  $output = `wget --no-check-certificate $ENV{GUIFI_URL}$GUIFI_DEV_DB_GZ`;
 
   if ($? != 0) {
     # Error
@@ -153,7 +153,7 @@ if (! -e $GUIFI_WEB_DIR."INSTALLED") {
   }
 
   # We clone actual drupal-guifi git repository
-  $output = `git clone https://github.com/guifi/drupal-guifi.git ${GUIFI_MODULES_DIR}guifi`;
+  $output = `git clone http://github.com/guifi/drupal-guifi.git ${GUIFI_MODULES_DIR}guifi`;
 
   if ($? != 0) {
     # Error
@@ -172,7 +172,7 @@ if (! -e $GUIFI_WEB_DIR."INSTALLED") {
   }
 
   # We clone actual drupal-budgets git repository
-  $output = `git clone https://github.com/guifi/drupal-budgets.git ${GUIFI_MODULES_DIR}budgets`;
+  $output = `git clone http://github.com/guifi/drupal-budgets.git ${GUIFI_MODULES_DIR}budgets`;
 
   if ($? != 0) {
     # Error
@@ -214,7 +214,7 @@ if (! -e $GUIFI_WEB_DIR."INSTALLED") {
      die "Error in themes dir creation.\n";
   }
 
-  $output = `git clone https://github.com/guifi/drupal-theme_guifinet2011.git ${GUIFI_THEMES_DIR}guifi2011`;
+  $output = `git clone http://github.com/guifi/drupal-theme_guifinet2011.git ${GUIFI_THEMES_DIR}guifi2011`;
   if ($? != 0) {
      # Error
      die "Error in git cloning theme.\n";
@@ -238,7 +238,7 @@ if (! -e $GUIFI_WEB_DIR."INSTALLED") {
      die "Error updating database.\n";
   }
 
-  $output = `cd /tmp && wget https://guifi.net/files/color/guifi.net2011-673770f4.tgz`;
+  $output = `cd /tmp && wget --no-check-certificate https://guifi.net/files/color/guifi.net2011-673770f4.tgz`;
   if ($? != 0) {
      # Error
      die "Error downloading theme cache.\n";
