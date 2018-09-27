@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+# User mappings
+/user-mapping.sh
+
 # Configuration script in Perl
 perl /drupal-entry.pl
 

@@ -266,6 +266,15 @@ if (! -e $GUIFI_WEB_DIR."INSTALLED") {
     die "Error changing permissions budgets module.\n";
   }
 
+  # We change permissions of all drupal directory
+  $output = `chown -R $ENV{GUIFI_UNIX_USER}:$ENV{GUIFI_UNIX_USER} /usr/share/drupal/guifi-web`;
+
+  if ($? != 0) {
+    # Error
+    die "Error changing permissions budgets module.\n";
+  }
+
+
   # Deleting all /tmp files
   $output = `rm -rf /tmp/*`;
   if ($? != 0) {
